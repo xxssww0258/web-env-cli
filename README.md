@@ -1,6 +1,9 @@
 # webnev
 适用在网吧一键安装前端开发环境,需要先安装node,兼容windows,mac
-因为本人长期在网吧敲代码 所以才开发的这个项目
+因为本人长期在网吧敲代码 所以才开发的这个项目  
+
+
+[![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/web-env-cli)
 
 ## 具体功能  
 + 判断平台  
@@ -9,6 +12,11 @@
 + 下载git  
 + 下载vsc  
 + git项目克隆
+
+##  使用  
+``` js
+  npm install web-env-cli
+```
 
 ## 注意  
 + 过程中用到axios 下载软件 下载完毕后没用的东西可以删掉

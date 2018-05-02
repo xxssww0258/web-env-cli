@@ -76,7 +76,7 @@ class OneKey {
         }
         await this.download(url,name)
         console.log('git初始化完毕')
-        exec(openMethod).then(()=>{})
+        exec(openMethod)
     }
     // 下载vsc
     async downloadVSC(){
@@ -95,7 +95,7 @@ class OneKey {
         }
         await this.download(url,name)
         console.log('vscode初始化完毕')
-        exec(openMethod).then(()=>{})
+        exec(openMethod)
     }
     // git 克隆
     gitCloneAddress(){
@@ -139,7 +139,7 @@ class OneKey {
         this.downloadCNPM()
         this.downloadYARN()
         .then(()=>this.downloadModules())
-        .then(()=>Promise.all([this.downloadGit(),this.downloadVSC()]))
+        .then(()=>Promise.all([this.downloadGit(),this.downloadVSC()]).then(()=>{}))
         .then(()=>{this.gitCloneAddress()})
         // .catch(process.exit(1))
     }
