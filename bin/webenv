@@ -1,6 +1,6 @@
-const process = request('process');
-let readable=process.stdin;
-readable.once(function(e){
-  process.stdout.write(e)
-  readable.pause()
-})
+#!/usr/bin/env node
+
+const process = require('process');
+if (process.argv[2]==='init'){
+  require('../index.js')
+}

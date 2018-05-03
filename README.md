@@ -15,7 +15,11 @@
 
 ##  使用  
 ```
-  npm install web-env-cli
+  npm install -g web-env-cli
+
+  cd ~/Desktop  //进入到桌面
+
+  webenv init  //下载vsc , git , 你的项目到桌面
 ```
 
 ## 注意  

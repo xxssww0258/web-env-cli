@@ -1,6 +1,8 @@
 node_modules/*
 git-2.16.3-intel-universal-mavericks.dmg
+git-2.16.3-intel-universal-mavericks.dmg.temp
 VSCode-darwin-stable.zip
 VSCode-darwin-stable.zip.cpgz
+VSCode-darwin-stable.zip.temp
 yarn.lock
 package.json
