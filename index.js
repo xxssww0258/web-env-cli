@@ -72,7 +72,8 @@ class OneKey {
             case 'windows':
                 name='Git-'+config.gitV+'-64-bit.exe'
                 openMethod='start '+name
-                tempUrl='https://npm.taobao.org/mirrors/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe'
+                // tempUrl='https://npm.taobao.org/mirrors/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe' //这条链接被跳转
+                tempUrl='http://cdn.npm.taobao.org/dist/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe'
                 break;
             case 'mac':
                 name='git-'+config.gitV+'-intel-universal-mavericks.dmg';
@@ -126,10 +127,13 @@ class OneKey {
             throw new Error('git clone 错误'+err)
         }
     }
-    // 检测下载函数
+    // 下载函数
     async download(_url,_name){
         if(!fs.existsSync(_name)){
+            //删除临时文件
+            fs.existsSync(_name+'.temp')?fs.unlinkSync(_name+'.temp'):''
             let tempHttp=url.parse(_url).protocol==='https:' ?https :http
+            // 下载文件
             await new Promise(res=>{
                 let req=tempHttp.request(_url,function(_res){
                     let data=new Buffer(0)
