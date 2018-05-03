@@ -3,8 +3,14 @@ const util = require('util');
 const process=require('process');
 const path=require('path');
 const fs=require('fs');
+const https=require('https');
+const http=require('http');
+const url=require('url');
 
-const exec = util.promisify(require('child_process').exec); 
+const exec = promisify(require('child_process').exec); 
+const writeFile = promisify(fs.writeFile); 
+
+function promisify(_obj){ return util.promisify(_obj) }
 
 const config = {
     gitV:'2.16.3',
@@ -49,7 +55,7 @@ class OneKey {
         }
         console.log('yarn初始化完毕')
     }
-    // 下载npm模块
+    // 下载npm模块 暂时不用 以后可能需要依赖某些模块时才使用
     async downloadModules(){
         try {
             require('axios');
@@ -61,41 +67,41 @@ class OneKey {
     }
     // 下载git
     async downloadGit(){
-        let name, url, openMethod;
+        let name, tempUrl, openMethod;
         switch(this.platform){
             case 'windows':
                 name='Git-'+config.gitV+'-64-bit.exe'
                 openMethod='start '+name
-                url='https://npm.taobao.org/mirrors/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe'
+                tempUrl='https://npm.taobao.org/mirrors/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe'
                 break;
             case 'mac':
                 name='git-'+config.gitV+'-intel-universal-mavericks.dmg';
                 openMethod='open '+name
-                url='https://jaist.dl.sourceforge.net/project/git-osx-installer/git-'+config.gitV+'-intel-universal-mavericks.dmg'
+                tempUrl='https://jaist.dl.sourceforge.net/project/git-osx-installer/git-'+config.gitV+'-intel-universal-mavericks.dmg'
                 break;
         }
-        await this.download(url,name)
-        console.log('git初始化完毕')
+        await this.download(tempUrl,name)
         exec(openMethod)
+        console.log('git初始化完毕')
     }
     // 下载vsc
     async downloadVSC(){
-        let name, url, openMethod;
+        let name, tempUrl, openMethod;
         switch(this.platform){
             case 'windows':
                 name='VSCodeSetup-ia32-1.22.2.exe'
                 openMethod='start '+name
-                url='https://vscode.cdn.azure.cn/stable/3aeede733d9a3098f7b4bdc1f66b63b0f48c1ef9/VSCodeSetup-ia32-1.22.2.exe'
+                tempUrl='https://vscode.cdn.azure.cn/stable/3aeede733d9a3098f7b4bdc1f66b63b0f48c1ef9/VSCodeSetup-ia32-1.22.2.exe'
                 break;
             case 'mac':
                 name='VSCode-darwin-stable.zip';
                 openMethod='open '+name
-                url='https://vscode.cdn.azure.cn/stable/3aeede733d9a3098f7b4bdc1f66b63b0f48c1ef9/VSCode-darwin-stable.zip'
+                tempUrl='https://vscode.cdn.azure.cn/stable/3aeede733d9a3098f7b4bdc1f66b63b0f48c1ef9/VSCode-darwin-stable.zip'
                 break;
         }
-        await this.download(url,name)
+        await this.download(tempUrl,name)
+        exec(openMethod)//打开文件
         console.log('vscode初始化完毕')
-        exec(openMethod)
     }
     // git 克隆
     gitCloneAddress(){
@@ -107,14 +113,13 @@ class OneKey {
                     exec('git clone '+_gitAddress)
                 })
             }else{
-                readable.resume();//开启输入
-                console.log('> 请输入git项目地址 多个则用英文逗号隔开: ')
-                readable.once('data',function(data) {
+                process.stdout.write('> 请输入git项目地址 多个则用英文逗号隔开: ')
+                process.stdin.once('data',function(data) {
                     gitAddresses=data.toString().split(',')
                     gitAddresses.forEach(_gitAddress=>{
                         exec('git clone '+_gitAddress)
                     })
-                    readable.pause()
+                    process.stdin.pause()
                 })
             }
         }catch(err){
@@ -123,14 +128,21 @@ class OneKey {
     }
     // 检测下载函数
     async download(_url,_name){
-        let axios = require('axios')
         if(!fs.existsSync(_name)){
-            await axios({
-                url:_url,
-                responseType:'arraybuffer',
-            }).then(res=>{
-                fs.writeFile(_name,res.data)
-            }).catch(rej=>{throw new Error(_name+'下载错误'+rej)})
+            let tempHttp=url.parse(_url).protocol==='https:' ?https :http
+            await new Promise(res=>{
+                let req=tempHttp.request(_url,function(_res){
+                    let data=new Buffer(0)
+                    _res.on('data', d => {
+                        fs.appendFileSync(_name+'.temp',d)
+                    });
+                    _res.on('end',function(){
+                        fs.renameSync(_name+'.temp',_name)
+                        res()//返回promise
+                    })
+                })
+                req.end();//请求结束
+            })
         }
     }
     // 初始化
@@ -138,8 +150,8 @@ class OneKey {
         this.whatPlatform()
         this.downloadCNPM()
         this.downloadYARN()
-        .then(()=>this.downloadModules())
-        .then(()=>Promise.all([this.downloadGit(),this.downloadVSC()]).then(()=>{}))
+        // .then(()=>this.downloadModules())
+        .then(()=>Promise.all([this.downloadGit(),this.downloadVSC()]))
         .then(()=>{this.gitCloneAddress()})
         // .catch(process.exit(1))
     }
