@@ -118,7 +118,7 @@ class OneKey {
                 })
             })
         }else{
-            process.stdout.write('> 请输入git项目地址 多个则用英文逗号隔开: ')
+            process.stdout.write('> 请输入git项目地址 多个则用英文逗号隔开(记得先安装git): ')
             process.stdin.once('data',function(data) {
                 gitAddresses=data.toString().split(',')
                 gitAddresses.forEach(_gitAddress=>{

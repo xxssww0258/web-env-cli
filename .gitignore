@@ -10,3 +10,4 @@ VSCodeSetup-ia32-1.22.2.exe.temp
 VSCodeSetup-ia32-1.22.2.exe
 yarn.lock
 package.json
+.travis.yml
