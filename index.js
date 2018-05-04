@@ -108,23 +108,29 @@ class OneKey {
     gitCloneAddress(){
         let readable=process.stdin;
         let { gitAddresses } = config;
-        try{
-            if(gitAddresses.length>0){
+        if(gitAddresses.length>0){
+            gitAddresses.forEach(_gitAddress=>{
+                exec('git clone '+_gitAddress).then(res=>{
+                    console.log(_gitAddress+': 克隆完毕')
+                }).catch(rej=>{
+                    console.log(_gitAddress+': 克隆失败')
+                    console.log(rej)
+                })
+            })
+        }else{
+            process.stdout.write('> 请输入git项目地址 多个则用英文逗号隔开: ')
+            process.stdin.once('data',function(data) {
+                gitAddresses=data.toString().split(',')
                 gitAddresses.forEach(_gitAddress=>{
-                    exec('git clone '+_gitAddress)
-                })
-            }else{
-                process.stdout.write('> 请输入git项目地址 多个则用英文逗号隔开: ')
-                process.stdin.once('data',function(data) {
-                    gitAddresses=data.toString().split(',')
-                    gitAddresses.forEach(_gitAddress=>{
-                        exec('git clone '+_gitAddress)
+                    exec('git clone '+_gitAddress).then(res=>{
+                        console.log(_gitAddress+': 克隆完毕')
+                    }).catch(rej=>{
+                        console.log(_gitAddress+': 克隆失败')
+                        console.log(rej)
                     })
-                    process.stdin.pause()
                 })
-            }
-        }catch(err){
-            throw new Error('git clone 错误'+err)
+                process.stdin.pause()
+            })
         }
     }
     // 下载函数
