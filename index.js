@@ -74,6 +74,7 @@ class OneKey {
                 openMethod='start '+name
                 // tempUrl='https://npm.taobao.org/mirrors/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe' //这条链接被跳转
                 tempUrl='http://cdn.npm.taobao.org/dist/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe'
+                // 'http://cdn.npm.taobao.org/dist/git-for-windows/v2.16.3.windows.1/Git-2.16.3-32-bit.exe'
                 break;
             case 'mac':
                 name='git-'+config.gitV+'-intel-universal-mavericks.dmg';
@@ -93,11 +94,13 @@ class OneKey {
                 name='VSCodeSetup-ia32-1.22.2.exe'
                 openMethod='start '+name
                 tempUrl='https://vscode.cdn.azure.cn/stable/3aeede733d9a3098f7b4bdc1f66b63b0f48c1ef9/VSCodeSetup-ia32-1.22.2.exe'
+                // 'https://vscode.cdn.azure.cn/stable/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/VSCodeSetup-x64-1.23.0.exe'
+                // 'https://vscode.cdn.azure.cn/stable/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/VSCodeSetup-ia32-1.23.0.exe'
                 break;
             case 'mac':
                 name='VSCode-darwin-stable.zip';
                 openMethod='open '+name
-                tempUrl='https://vscode.cdn.azure.cn/stable/3aeede733d9a3098f7b4bdc1f66b63b0f48c1ef9/VSCode-darwin-stable.zip'
+                tempUrl='https://vscode.cdn.azure.cn/stable/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/VSCode-darwin-stable.zip'
                 break;
         }
         await this.download(tempUrl,name)
@@ -106,14 +109,13 @@ class OneKey {
     }
     // git 克隆
     gitCloneAddress(){
-        let readable=process.stdin;
         let { gitAddresses } = config;
         if(gitAddresses.length>0){
             gitAddresses.forEach(_gitAddress=>{
                 exec('git clone '+_gitAddress).then(res=>{
-                    console.log(_gitAddress+': 克隆完毕')
+                    console.log(_gitAddress+': 克隆完毕')
                 }).catch(rej=>{
-                    console.log(_gitAddress+': 克隆失败')
+                    console.log(_gitAddress+': 克隆失败')
                     console.log(rej)
                 })
             })
@@ -122,10 +124,11 @@ class OneKey {
             process.stdin.once('data',function(data) {
                 gitAddresses=data.toString().split(',')
                 gitAddresses.forEach(_gitAddress=>{
+                    _gitAddress=_gitAddress.trim()
                     exec('git clone '+_gitAddress).then(res=>{
-                        console.log(_gitAddress+': 克隆完毕')
+                        console.log(_gitAddress+': 克隆完毕')
                     }).catch(rej=>{
-                        console.log(_gitAddress+': 克隆失败')
+                        console.log(_gitAddress+': 克隆失败')
                         console.log(rej)
                     })
                 })
