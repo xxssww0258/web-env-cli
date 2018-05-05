@@ -21,6 +21,17 @@ class OneKey {
     constructor(){
         this.platform='windows';
     }
+    // 判断系统位数
+    is64(){
+        // 'arm', 'arm64', 'ia32', 'mips', 'mipsel', 'ppc', 'ppc64', 's390', 's390x', 'x32', 'x64'。
+        if(process.arch.indexOf('64')!=-1
+            ||process.arch.indexOf('mipsel')!=-1
+            ||process.arch.indexOf('s390x')!=-1
+        ){
+            return true;
+        }
+        return false;
+    }
     // 判断平台
     whatPlatform(){
         switch(process.platform){
@@ -43,7 +54,7 @@ class OneKey {
             await exec('npm install -g cnpm --registry=https://registry.npm.taobao.org')
                 .catch(rej=>{throw new Error('cnpm初始化错误'+rej)})
         }
-        console.log('cnpm初始化完毕')
+        console.log('\ncnpm初始化完毕')
     }
     // 下载yarn
     async downloadYARN(){
@@ -70,11 +81,14 @@ class OneKey {
         let name, tempUrl, openMethod;
         switch(this.platform){
             case 'windows':
-                name='Git-'+config.gitV+'-64-bit.exe'
+                name=this.is64()
+                    ?'Git-'+config.gitV+'-64-bit.exe'
+                    :'Git-'+config.gitV+'-32-bit.exe'
                 openMethod='start '+name
                 // tempUrl='https://npm.taobao.org/mirrors/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe' //这条链接被跳转
-                tempUrl='http://cdn.npm.taobao.org/dist/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe'
-                // 'http://cdn.npm.taobao.org/dist/git-for-windows/v2.16.3.windows.1/Git-2.16.3-32-bit.exe'
+                tempUrl=this.is64()
+                    ?'http://cdn.npm.taobao.org/dist/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe'
+                    :'http://cdn.npm.taobao.org/dist/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-32-bit.exe'
                 break;
             case 'mac':
                 name='git-'+config.gitV+'-intel-universal-mavericks.dmg';
@@ -91,11 +105,13 @@ class OneKey {
         let name, tempUrl, openMethod;
         switch(this.platform){
             case 'windows':
-                name='VSCodeSetup-ia32-1.22.2.exe'
+                name=this.is64()
+                    ?'VSCodeSetup-x64-1.23.0.exe'
+                    :'VSCodeSetup-ia32-1.23.0.exe'
                 openMethod='start '+name
-                tempUrl='https://vscode.cdn.azure.cn/stable/3aeede733d9a3098f7b4bdc1f66b63b0f48c1ef9/VSCodeSetup-ia32-1.22.2.exe'
-                // 'https://vscode.cdn.azure.cn/stable/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/VSCodeSetup-x64-1.23.0.exe'
-                // 'https://vscode.cdn.azure.cn/stable/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/VSCodeSetup-ia32-1.23.0.exe'
+                tempUrl=this.is64()
+                    ?'https://vscode.cdn.azure.cn/stable/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/VSCodeSetup-x64-1.23.0.exe'
+                    :'https://vscode.cdn.azure.cn/stable/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/VSCodeSetup-ia32-1.23.0.exe'
                 break;
             case 'mac':
                 name='VSCode-darwin-stable.zip';
@@ -120,7 +136,8 @@ class OneKey {
                 })
             })
         }else{
-            process.stdout.write('> 请输入git项目地址 多个则用英文逗号隔开(记得先安装git): ')
+            process.stdout.write('> 请输入git项目地址 多个则用英文逗号隔开: ')
+            process.stdout.write('\n> 记得先安装git,如果git环境变量还没生效,请重开shell再敲一遍webenv init \n')
             process.stdin.once('data',function(data) {
                 gitAddresses=data.toString().split(',')
                 gitAddresses.forEach(_gitAddress=>{
