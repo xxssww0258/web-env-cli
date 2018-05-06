@@ -24,7 +24,6 @@ class OneKey {
     // 判断系统位数
     is64(){
         // 'arm', 'arm64', 'ia32', 'mips', 'mipsel', 'ppc', 'ppc64', 's390', 's390x', 'x32', 'x64'。
-        console.log('当前操作系统是: '+process.arch)
         return ['64','mipsel','s390x'].some(x=>process.arch.indexOf(x)==1)
     }
     // 判断平台
@@ -41,15 +40,22 @@ class OneKey {
         }
         console.log('当前操作系统是: '+this.platform)
     }
+    // 添加环境变量
+    setPATH(){
+        //git path
+        this.platform=='windows'
+            ?exec(`set path=%path%${process.env.ProgramFiles + '/Git/bin;'}`)
+            :exec(`export PATH=$PATH:${process.env.ProgramFiles + '/Git/bin;'}`)
+    }
     // 下载cnpm
     async downloadCNPM(){
         try{// console.log('已经安装cnpm')
             await exec('cnpm')
         }catch(error){//如果没有安装cnpm
             await exec('npm install -g cnpm --registry=https://registry.npm.taobao.org')
-                .catch(rej=>{throw new Error('cnpm初始化错误'+rej)})
+                .catch(rej=>{throw new Error('cnpm初始化错误\n'+rej)})
         }
-        console.log('\ncnpm初始化完毕')
+        console.log('                                              ------cnpm初始化完毕')
     }
     // 下载yarn
     async downloadYARN(){
@@ -57,9 +63,9 @@ class OneKey {
             await exec('yarn')
         }catch(error){//如果没有安装cnpm
             await exec('npm install -g yarn')
-                .catch(rej=>{throw new Error('yarn初始化错误'+rej)})
+                .catch(rej=>{throw new Error('yarn初始化错误\n'+rej)})
         }
-        console.log('yarn初始化完毕')
+        console.log('                                              ------yarn初始化完毕')
     }
     // 下载npm模块 暂时不用 以后可能需要依赖某些模块时才使用
     async downloadModules(){
@@ -67,9 +73,9 @@ class OneKey {
             require('axios');
         } catch (error) {
             await exec('yarn add axios')
-                .catch(rej=>{throw new Error('axios初始化错误'+rej)})
+                .catch(rej=>{throw new Error('axios初始化错误\n'+rej)})
         }
-        console.log('axios初始化完毕')
+        console.log('                                              ------axios初始化完毕')
     }
     // 下载git
     async downloadGit(){
@@ -93,7 +99,7 @@ class OneKey {
         }
         await this.download(tempUrl,name)
         exec(openMethod)
-        console.log('git初始化完毕')
+        console.log('                                              ------git初始化完毕')
     }
     // 下载vsc
     async downloadVSC(){
@@ -116,7 +122,7 @@ class OneKey {
         }
         await this.download(tempUrl,name)
         exec(openMethod)//打开文件
-        console.log('vscode初始化完毕')
+        console.log('                                              ------vscode初始化完毕')
     }
     // git 克隆
     gitCloneAddress(){
@@ -126,13 +132,13 @@ class OneKey {
                 exec('git clone '+_gitAddress).then(res=>{
                     console.log(_gitAddress+': 克隆完毕')
                 }).catch(rej=>{
-                    console.log(_gitAddress+': 克隆失败')
+                    console.log(_gitAddress+': 克隆失败\n')
                     console.log(rej)
                 })
             })
         }else{
-            process.stdout.write('> 请输入git项目地址 多个则用英文逗号隔开: ')
-            process.stdout.write('\n> 记得先安装git,如果git环境变量还没生效,请重开shell再敲一遍webenv init \n')
+            process.stdout.write('> 请输入git项目地址 多个则用英文逗号隔开: \n')
+            process.stdout.write('> 记得先安装git,如果git环境变量还没生效,请重开shell再敲一遍webenv init \n')
             process.stdin.once('data',function(data) {
                 gitAddresses=data.toString().split(',')
                 gitAddresses.forEach(_gitAddress=>{
@@ -140,7 +146,7 @@ class OneKey {
                     exec('git clone '+_gitAddress).then(res=>{
                         console.log(_gitAddress+': 克隆完毕')
                     }).catch(rej=>{
-                        console.log(_gitAddress+': 克隆失败')
+                        console.log(_gitAddress+': 克隆失败\n')
                         console.log(rej)
                     })
                 })
@@ -172,7 +178,9 @@ class OneKey {
     }
     // 初始化
     init(){
+        console.log('当前操作系统是: '+process.arch)
         this.whatPlatform()
+        this.setPATH()
         this.downloadCNPM()
         this.downloadYARN()
         // .then(()=>this.downloadModules())
