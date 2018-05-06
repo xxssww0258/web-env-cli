@@ -1,6 +1,6 @@
 {
   "name": "web-env-cli",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "适用在网吧一键安装前端开发环境,兼容windows,mac",
   "main": "index.js",
   "bin": {

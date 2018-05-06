@@ -14,7 +14,8 @@ function promisify(_obj){ return util.promisify(_obj) }
 
 const config = {
     gitV:'2.16.3',
-    gitAddresses:[]
+    gitAddresses:[],
+    path:['/Git/bin;'],//暴露的环境变量
 }
 
 class OneKey {
@@ -43,9 +44,9 @@ class OneKey {
     // 添加环境变量
     setPATH(){
         //git path
-        this.platform=='windows'
-            ?exec(`set path=%path%${process.env.ProgramFiles + '/Git/bin;'}`)
-            :exec(`export PATH=$PATH:${process.env.ProgramFiles + '/Git/bin;'}`)
+        config.path.forEach(x=>{
+            process.env.PATH += ';'+process.env.ProgramFiles + x
+        })
     }
     // 下载cnpm
     async downloadCNPM(){
