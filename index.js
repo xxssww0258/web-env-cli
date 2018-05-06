@@ -24,13 +24,8 @@ class OneKey {
     // 判断系统位数
     is64(){
         // 'arm', 'arm64', 'ia32', 'mips', 'mipsel', 'ppc', 'ppc64', 's390', 's390x', 'x32', 'x64'。
-        if(process.arch.indexOf('64')!=-1
-            ||process.arch.indexOf('mipsel')!=-1
-            ||process.arch.indexOf('s390x')!=-1
-        ){
-            return true;
-        }
-        return false;
+        console.log('当前操作系统是: '+process.arch)
+        return ['64','mipsel','s390x'].some(x=>process.arch.indexOf(x)==1)
     }
     // 判断平台
     whatPlatform(){
