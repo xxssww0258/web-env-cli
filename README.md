@@ -22,9 +22,9 @@
 
   webenv init  //下载vsc , git , 记得先把git安装了
   // 因为git是即时安装的 所以环境变量不一定即时生效  重新开一个窗口再敲一遍webenv init 才能克隆成功  
-  git clone https://github.com/username/sth.git  //填写你的git项目地址 私有项目可以填入账号密码 克隆到桌面  
+  https://github.com/username/sth.git  //填写你的git项目地址 私有项目可以填入账号密码 克隆到桌面  
 
-  git clone https://github.com/username/sth.git,git clone https://username:password@github.com/username/sth.git  //同时克隆多个项目需要逗号分隔
+  https://github.com/username/sth.git,https://username:password@github.com/username/sth.git  //同时克隆多个项目需要逗号分隔
 ```
 
 ## 注意  
