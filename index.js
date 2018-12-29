@@ -13,7 +13,7 @@ const writeFile = promisify(fs.writeFile);
 function promisify(_obj){ return util.promisify(_obj) }
 
 const config = {
-    gitV:'2.16.3',
+    gitV:'2.19.1',
     gitAddresses:[],
     path:['/Git/bin;'],//暴露的环境变量
 }
@@ -89,8 +89,8 @@ class OneKey {
                 openMethod='start '+name
                 // tempUrl='https://npm.taobao.org/mirrors/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe' //这条链接被跳转
                 tempUrl=this.is64()
-                    ?'http://cdn.npm.taobao.org/dist/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe'
-                    :'http://cdn.npm.taobao.org/dist/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-32-bit.exe'
+                    ?'https://npm.taobao.org/mirrors/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-64-bit.exe'
+                    :'https://npm.taobao.org/mirrors/git-for-windows/v'+config.gitV+'.windows.1/Git-'+config.gitV+'-32-bit.exe'
                 break;
             case 'mac':
                 name='git-'+config.gitV+'-intel-universal-mavericks.dmg';
@@ -112,13 +112,13 @@ class OneKey {
                     :'VSCodeSetup-ia32-1.23.0.exe'
                 openMethod='start '+name
                 tempUrl=this.is64()
-                    ?'https://vscode.cdn.azure.cn/stable/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/VSCodeSetup-x64-1.23.0.exe'
-                    :'https://vscode.cdn.azure.cn/stable/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/VSCodeSetup-ia32-1.23.0.exe'
+                    ?'https://vscode.cdn.azure.cn/stable/dea8705087adb1b5e5ae1d9123278e178656186a/VSCodeUserSetup-x64-1.30.1.exe'
+                    :'https://vscode.cdn.azure.cn/stable/dea8705087adb1b5e5ae1d9123278e178656186a/VSCodeUserSetup-ia32-1.30.1.exe'
                 break;
             case 'mac':
                 name='VSCode-darwin-stable.zip';
                 openMethod='open '+name
-                tempUrl='https://vscode.cdn.azure.cn/stable/7c7da59c2333a1306c41e6e7b68d7f0caa7b3d45/VSCode-darwin-stable.zip'
+                tempUrl='https://vscode.cdn.azure.cn/stable/dea8705087adb1b5e5ae1d9123278e178656186a/VSCode-darwin-stable.zip'
                 break;
         }
         await this.download(tempUrl,name)
